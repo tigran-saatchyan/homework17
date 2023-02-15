@@ -37,8 +37,10 @@ class Genre(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255))
 
-db.drop_all()
-db.create_all()
+
+with app.app_context():
+    db.drop_all()
+    db.create_all()
 
 # -------------------------------------------------------
 data = {
@@ -255,21 +257,24 @@ for movie in data["movies"]:
         genre_id=movie["genre_id"],
         director_id=movie["director_id"],
     )
-    with db.session.begin():
-        db.session.add(m)
+    with app.app_context():
+        with db.session.begin():
+            db.session.add(m)
 
 for director in data["directors"]:
     d = Director(
         id=director["pk"],
         name=director["name"],
     )
-    with db.session.begin():
-        db.session.add(d)
+    with app.app_context():
+        with db.session.begin():
+            db.session.add(d)
 
 for genre in data["genres"]:
     d = Genre(
         id=genre["pk"],
         name=genre["name"],
     )
-    with db.session.begin():
-        db.session.add(d)
+    with app.app_context():
+        with db.session.begin():
+            db.session.add(d)
